@@ -1,0 +1,1 @@
+from app.models.wm import WmModel
