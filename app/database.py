@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from typing import AsyncIterable
 from dotenv import load_dotenv
 import os
 
@@ -14,11 +15,15 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL не задан в .env файле")
 
-# Создаем движок для подключения к базе данных
-engine = create_engine(DATABASE_URL)
-
-# Создаем фабрику сессий
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(
+    url=DATABASE_URL,
+)
+sessionmaker = async_sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 # Базовый класс для моделей
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
+
+async def get_session() -> AsyncIterable[AsyncSession]:
+    async with sessionmaker() as session:
+        yield session
