@@ -7,5 +7,7 @@ class WmModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
-    installation_date = Column(DateTime, default=datetime.utcnow)
+    installation_date = Column(DateTime, default=datetime.now)
+    location = Column(String, nullable=True)
     balance = Column(Float, default=0.0)
+    description = Column(String, nullable=True)

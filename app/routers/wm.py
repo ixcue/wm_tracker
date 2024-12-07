@@ -4,7 +4,9 @@ from app.database import SessionLocal
 from app.models.wm import WmModel
 
 # Создаем роутер
-router = APIRouter()
+router = APIRouter(
+    tags=["Washing Machine"]
+)
 
 # Функция для получения сессии базы данных
 def get_db():
@@ -16,12 +18,21 @@ def get_db():
 
 # Маршрут для добавления новой стиральной машинки
 @router.post("/")
-def create_washing_machine(name: str, db: Session = Depends(get_db)):
-    new_machine = WmModel(name=name)
+def create_washing_machine(name: str, location: str, description: str, db: Session = Depends(get_db)):
+    new_machine = WmModel(
+        name=name, 
+        location=location, 
+        description=description,
+    )
     db.add(new_machine)
     db.commit()
     db.refresh(new_machine)
-    return {"id": new_machine.id, "name": new_machine.name, "balance": new_machine.balance}
+    #return {"id": new_machine.id, "name": new_machine.name, "location": new_machine.location, "balance": new_machine.balance, "description": new_machine.description}
+    return new_machine
+
+
+
+
 
 # Маршрут для получения списка всех машинок
 @router.get("/")

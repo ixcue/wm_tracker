@@ -1,0 +1,31 @@
+
+services:
+  postgres:
+    container_name: wm_tracker.postgres
+    image: "postgres:16-alpine"
+    hostname: wm_tracker.postgres
+    restart: unless-stopped
+    ports:
+      - "5444:5432"
+    networks:
+      - wm_tracker_network
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - wm_tracker_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+volumes:
+  wm_tracker_postgres_data:
+
+networks:
+  wm_tracker_network:
+    driver: bridge
