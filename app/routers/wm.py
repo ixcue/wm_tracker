@@ -30,10 +30,6 @@ def create_washing_machine(name: str, location: str, description: str, db: Sessi
     #return {"id": new_machine.id, "name": new_machine.name, "location": new_machine.location, "balance": new_machine.balance, "description": new_machine.description}
     return new_machine
 
-
-
-
-
 # Маршрут для получения списка всех машинок
 @router.get("/")
 def get_washing_machines(db: Session = Depends(get_db)):
